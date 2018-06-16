@@ -9,8 +9,6 @@ const request = require('superagent');
 
 // middleware (cors and read json body)
 const cors = require('cors');
-const morgan = require('morgan');
-app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 // server files in public directory

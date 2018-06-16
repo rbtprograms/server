@@ -1,6 +1,6 @@
-const DATABASE_URL = 'postgres://localhost:5432/<your-database>';
+// const DATABASE_URL = 'postgres://localhost:5432/<your-database>';
 // windows and linux
-const DATABASE_URL = 'postgres://user:password@localhost:5432/<your-database>';
+const DATABASE_URL = 'postgres://postgres:1234@localhost:5432/bballplayers';
 const pg = require('pg');
 const Client = pg.Client;
 
