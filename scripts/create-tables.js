@@ -24,6 +24,14 @@ client.query(`
     type_id INTEGER NOT NULL,
     month_id INTEGER NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(99) UNIQUE NOT NULL,
+    email VARCHAR(99) UNIQUE,
+    password VARCHAR(99),
+    shopping_list_id int
+  );
 `)
   .then(
     () => console.log('create tables complete'),
