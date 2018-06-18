@@ -1,14 +1,14 @@
 [
   { "month" : "January", "season_id" : 1 },
-  { "month" : "February", "season_id" : 2 },
-  { "month" : "March", "season_id" : 3 },
-  { "month" : "April", "season_id" : 4 },
-  { "month" : "May", "season_id" : 5 },
-  { "month" : "June", "season_id" : 6 },
-  { "month" : "July", "season_id" : 7 },
-  { "month" : "August", "season_id" : 8 },
-  { "month" : "September", "season_id" : 9 },
-  { "month" : "October", "season_id" : 10 },
-  { "month" : "November", "season_id" : 11 },
-  { "month" : "December", "season_id" : 12 }
+  { "month" : "February", "season_id" : 1 },
+  { "month" : "March", "season_id" : 2 },
+  { "month" : "April", "season_id" : 2 },
+  { "month" : "May", "season_id" : 2 },
+  { "month" : "June", "season_id" : 3 },
+  { "month" : "July", "season_id" : 3 },
+  { "month" : "August", "season_id" : 3 },
+  { "month" : "September", "season_id" : 4 },
+  { "month" : "October", "season_id" : 4 },
+  { "month" : "November", "season_id" : 4 },
+  { "month" : "December", "season_id" : 1 }
 ]
