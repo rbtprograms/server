@@ -19,16 +19,16 @@ app.use(express.static('public'));
 // connect to the database
 const client = require('./db-client');
 
-// const auth = (req, res, next) => {
-//   const id = req.get('Authorization');
-//   if(!id || isNaN(id)) {
-//     next('No Authentication');
-//     return;
-//   }
+const auth = (req, res, next) => {
+  const id = req.get('Authorization');
+  if(!id || isNaN(id)) {
+    next('No Authentication');
+    return;
+  }
 
-//   req.userId = +id;
-//   next();
-// };
+  req.userId = +id;
+  next();
+};
 
 // // routes
 // app.get('/api/neighborhoods', auth, (req, res, next) => {
@@ -156,89 +156,77 @@ const client = require('./db-client');
 //     .catch(next);
 // });
 
-// app.get('/api/restaurants', auth, (req, res, next) => {
-//   request.get(`${process.env.RESTAURANTS_API}/restaurant-inspections/`)
-//     .then(result => {
-//       res.send(result.body.results.map(rest => {
-//         return {
-//           address: rest.address,
-//           name: rest.name,
-//           inspectionNumber: rest.inspection_number
-//         };
-//       }));
-//     })
-//     .catch(next);
-// });
 
-// app.post('/api/auth/signup', (req, res, next) => {
-//   const body = req.body;
-//   const email = body.email;
-//   const password = body.password;
 
-//   if(!email || !password) {
-//     next('email and password are required');
-//   }
+app.post('/api/auth/signup', (req, res, next) => {
+  const body = req.body;
+  const email = body.email;
+  const password = body.password;
 
-//   client.query(`
-//     select count(*)
-//     from users
-//     where email = $1
-//   `,
-//   [email])
-//     .then(results => {
-//       if(results.rows[0].count > 0) {
-//         throw new Error('Email already exists');
-//       }
+  if(!username || !password) {
+    next('username and password are required');
+  }
 
-//       return client.query(`
-//         insert into users (email, password, name)
-//         values ($1, $2, $3)
-//         returning id, email, name
-//       `,
-//       [email, password, body.name]);
-//     })
-//     .then(results => {
-//       const row = results.rows[0];
-//       res.send({ 
-//         id: row.id,
-//         email: row.email,
-//         name: row.name
-//       });
-//     })
-//     .catch(next);
+  client.query(`
+    select count(*)
+    from users
+    where email = $1
+  `,
+  [email])
+    .then(results => {
+      if(results.rows[0].count > 0) {
+        throw new Error('Email already exists');
+      }
 
-// });
+      return client.query(`
+        insert into users (email, password, name)
+        values ($1, $2, $3)
+        returning id, email, name
+      `,
+      [email, password, body.name]);
+    })
+    .then(results => {
+      const row = results.rows[0];
+      res.send({ 
+        id: row.id,
+        email: row.email,
+        name: row.name
+      });
+    })
+    .catch(next);
 
-// app.post('/api/auth/signin', (req, res, next) => {
-//   const body = req.body;
-//   const email = body.email;
-//   const password = body.password;
+});
 
-//   if(!email || !password) {
-//     next('email and password are required');
-//   }
+app.post('/api/auth/signin', (req, res, next) => {
+  const body = req.body;
+  const email = body.email;
+  const password = body.password;
 
-//   client.query(`
-//     select id, email, password
-//     from users
-//     where email = $1
-//   `,
-//   [email]
-//   )
-//     .then(results => {
-//       const row = results.rows[0];
-//       if(!row || row.password !== password) {
-//         throw new Error('Invalid email or password');
-//       }
-//       res.send({ 
-//         id: row.id,
-//         email: row.email,
-//         name: row.name
-//       });
-//     })
-//     .catch(next);
+  if(!email || !password) {
+    next('email and password are required');
+  }
 
-// });
+  client.query(`
+    select id, email, password
+    from users
+    where email = $1
+  `,
+  [email]
+  )
+    .then(results => {
+      const row = results.rows[0];
+      if(!row || row.password !== password) {
+        throw new Error('Invalid email or password');
+      }
+      res.send({ 
+        id: row.id,
+        email: row.email,
+        name: row.name
+      });
+    })
+    .catch(next);
+
+});
 
 // must use all 4 parameters so express "knows" this is custom error handler!
 // eslint-disable-next-line
