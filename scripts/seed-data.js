@@ -4,6 +4,7 @@ const foods = require('../data/foods.json');
 const types = require('../data/types.json');
 const months = require('../data/months.json');
 const seasons = require('../data/seasons.json');
+const users = require('../data/users.json');
 
 Promise.all(
   seasons.map(season => {
@@ -47,6 +48,18 @@ Promise.all(
             VALUES ($1, $2, $3);
         `,
         [food.food, food.type_id, food.month_id]
+        ).then(result => result.rows[0]);
+      })
+    );
+  })
+  .then(() => {
+    return Promise.all(
+      users.map(user => {
+        return client.query(`
+            INSERT INTO users (username, email, password, shopping_list_id)
+            VALUES ($1, $2, $3, $4);
+        `,
+        [user.username, user.email, user.password, user.shopping_list_id]
         ).then(result => result.rows[0]);
       })
     );
