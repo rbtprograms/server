@@ -247,7 +247,7 @@
   { "food" : "tomatoes", "type_id" : 2, "month_id" : 9 },
   { "food" : "duck", "type_id" : 3, "month_id" : 9 },
   { "food" : "lamb", "type_id" : 3, "month_id" : 9 },
-  { "food" : "tomalobstertoes", "type_id" : 4, "month_id" : 9 },
+  { "food" : "lobster", "type_id" : 4, "month_id" : 9 },
   
   { "food" : "artichoke", "type_id" : 1, "month_id" : 10 },
   { "food" : "bell peppers", "type_id" : 1, "month_id" : 10 },
