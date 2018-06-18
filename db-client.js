@@ -1,9 +1,4 @@
-// const DATABASE_URL = 'postgres://localhost:5432/seasonal';
-
-// windows and linux
-require('dotenv').config();
-const loginString = process.env.POSTGRES_LOGIN;
-const DATABASE_URL = `postgres://${loginString}@localhost:5432/seasonal`;
+const DATABASE_URL = process.env.POSTGRES_LOGIN;
 
 const pg = require('pg');
 const Client = pg.Client;
