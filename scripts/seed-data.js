@@ -1,32 +1,52 @@
 require('dotenv').config();
 const client = require('../db-client');
-const quadrants = require('./quadrants.json');
-const neighborhoods = require('./neighborhoods.json');
+const foods = require('../data/foods.json');
+const types = require('../data/types.json');
+const months = require('../data/months.json');
+const seasons = require('../data/seasons.json');
 
 Promise.all(
-  quadrants.map(quadrant => {
+  seasons.map(season => {
     return client.query(`
-        INSERT INTO quadrants (name, direction)
-        VALUES ($1, $2);
+        INSERT INTO seasons (season)
+        VALUES ($1);
     `,
-    [quadrant.name, quadrant.direction]
+    [season.season]
     ).then(result => result.rows[0]);
   })
 )
   .then(() => {
     return Promise.all(
-      neighborhoods.map(n => {
+      months.map(month => {
         return client.query(`
-            INSERT INTO neighborhoods (
-              name, 
-              quadrant_id, 
-              population, 
-              founded, 
-              description
-            )
-            VALUES ($1, $2, $3, $4, $5);
+            INSERT INTO months (month, season_id)
+            VALUES ($1, $2);
         `,
-        [n.name, n.quadrant_id, n.population, n.founded, n.description]
+        [month.month, month.season_id]
+        ).then(result => result.rows[0]);
+      })
+    );
+  })
+  .then(() => {
+    return Promise.all(
+      types.map(type => {
+        return client.query(`
+            INSERT INTO types (type)
+            VALUES ($1);
+        `,
+        [type.type]
+        ).then(result => result.rows[0]);
+      })
+    );
+  })
+  .then(() => {
+    return Promise.all(
+      foods.map(food => {
+        return client.query(`
+            INSERT INTO foods (food, type_id, month_id)
+            VALUES ($1, $2, $3);
+        `,
+        [food.food, food.type_id, food.month_id]
         ).then(result => result.rows[0]);
       })
     );

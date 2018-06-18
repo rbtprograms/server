@@ -1,6 +1,10 @@
-const DATABASE_URL = 'postgres://localhost:5432/<your-database>';
+// const DATABASE_URL = 'postgres://localhost:5432/seasonal';
+
 // windows and linux
-const DATABASE_URL = 'postgres://user:password@localhost:5432/<your-database>';
+require('dotenv').config();
+const loginString = process.env.POSTGRES_LOGIN;
+const DATABASE_URL = `postgres://${loginString}@localhost:5432/seasonal`;
+
 const pg = require('pg');
 const Client = pg.Client;
 
