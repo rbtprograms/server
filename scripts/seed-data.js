@@ -56,10 +56,10 @@ Promise.all(
     return Promise.all(
       users.map(user => {
         return client.query(`
-            INSERT INTO users (username, email, password, shopping_list_id, favorites)
+            INSERT INTO users (username, email, password, shopping_list_id, favorite_recipes_id)
             VALUES ($1, $2, $3, $4, $5);
         `,
-        [user.username, user.email, user.password, user.shopping_list_id, user.favorites]
+        [user.username, user.email, user.password, user.shopping_list_id, user.favorite_recipes_id]
         ).then(result => result.rows[0]);
       })
     );
