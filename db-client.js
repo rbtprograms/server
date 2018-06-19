@@ -1,7 +1,4 @@
-// windows and linux
-require('dotenv').config();
-const loginString = process.env.POSTGRES_LOGIN;
-const DATABASE_URL = loginString;
+const DATABASE_URL = process.env.POSTGRES_LOGIN;
 
 const pg = require('pg');
 const Client = pg.Client;

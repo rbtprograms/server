@@ -27,9 +27,10 @@ client.query(`
 
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(256),
-    password VARCHAR(256),
-    favorites_id  INTEGER
+    username VARCHAR(99) UNIQUE NOT NULL,
+    email VARCHAR(99) UNIQUE,
+    password VARCHAR(99),
+    shopping_list_id int
   );
 `)
   .then(
