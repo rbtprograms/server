@@ -7,6 +7,7 @@ client.query(`
   DROP TABLE IF EXISTS months;
   DROP TABLE IF EXISTS seasons;
   DROP TABLE IF EXISTS users;
+  DROP TABLE IF EXISTS shopping_list;
 `)
   .then(
     () => console.log('drop tables complete'),
