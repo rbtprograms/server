@@ -2,5 +2,7 @@
   { "username" : "test",
   "email" : "test@test.com",
   "password" : "test" ,
-  "shopping_list_id" : 1}
+  "shopping_list_id" : 1,
+  "favorite_recipes_id" : null
+}
 ]

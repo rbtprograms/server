@@ -30,12 +30,20 @@ client.query(`
     username VARCHAR(256) UNIQUE NOT NULL,
     email VARCHAR(256) UNIQUE,
     password VARCHAR(256),
-    shopping_list_id int
+    shopping_list_id int,
+    favorite_recipes_id int
   );
 
   CREATE TABLE IF NOT EXISTS shopping_list (
     id SERIAL PRIMARY KEY,
     item VARCHAR(256) NOT NULL,
+    user_id INTEGER NOT NULL,
+    selected BOOLEAN NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS favorite_recipes (
+    id SERIAL PRIMARY KEY,
+    recipe_name VARCHAR(256,
     user_id INTEGER NOT NULL,
     selected BOOLEAN NOT NULL
   );
