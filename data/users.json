@@ -3,6 +3,6 @@
   "email" : "test@test.com",
   "password" : "test" ,
   "shopping_list_id" : 1,
-  "favorites" : 1959173
+  "favorite_recipes_id" : null
 }
 ]
