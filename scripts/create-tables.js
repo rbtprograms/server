@@ -32,6 +32,19 @@ client.query(`
     password VARCHAR(99),
     shopping_list_id int
   );
+
+  CREATE TABLE IF NOT EXISTS shopping_list (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
+    user_id INTEGER NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS list_items (
+    id SERIAL PRIMARY KEY,
+    item VARCHAR(256) NOT NULL,
+    shopping_list_id INTEGER NOT NULL,
+    selected BOOLEAN NOT NULL
+  );
 `)
   .then(
     () => console.log('create tables complete'),
