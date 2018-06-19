@@ -5,7 +5,7 @@ const express = require('express');
 const app = express();
 
 // superagent client AJAX library for calling 3rd party APIs
-const request = require('superagent');
+// const request = require('superagent');
 
 // middleware (cors and read json body)
 const cors = require('cors');
@@ -19,16 +19,16 @@ app.use(express.static('public'));
 // connect to the database
 const client = require('./db-client');
 
-const auth = (req, res, next) => {
-  const id = req.get('Authorization');
-  if(!id || isNaN(id)) {
-    next('No Authentication');
-    return;
-  }
+// const auth = (req, res, next) => {
+//   const id = req.get('Authorization');
+//   if(!id || isNaN(id)) {
+//     next('No Authentication');
+//     return;
+//   }
 
-  req.userId = +id;
-  next();
-};
+//   req.userId = +id;
+//   next();
+// };
 
 app.get('/api/search', (req, res, next) => {
   client.query(`
@@ -167,6 +167,31 @@ app.get('/api/search', (req, res, next) => {
 //     })
 //     .catch(next);
 // });
+
+
+
+// Add to shopping list
+app.post('/api/list', (req, res, next) => {
+  const body = req.body;
+  Promise.all(
+    body.map(item => {
+      client.query(`
+      INSERT INTO shopping_list (item, user_id, selected)
+      VALUES ($1, $2, $3);
+    `, [item.name, item.userid, item.selected])
+        .then(result => result.rows[0]);
+    })
+  )
+    .then(() => {
+      res.send({ added : true });
+    })
+    .catch(next);
+});
+
+
+
+
+
 
 // Sign-up
 app.post('/api/auth/signup', (req, res, next) => {
