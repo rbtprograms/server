@@ -30,6 +30,18 @@ const auth = (req, res, next) => {
   next();
 };
 
+app.get('/api/search', (req, res, next) => {
+  client.query(`
+    SELECT
+        food,
+        type_id,
+        month_id
+      FROM foods 
+  `).then(result => {
+    res.send(result.rows);
+  })
+    .catch(next);
+});
 // // routes
 // app.get('/api/neighborhoods', auth, (req, res, next) => {
 
