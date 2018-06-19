@@ -42,6 +42,17 @@ app.get('/api/search', (req, res, next) => {
   })
     .catch(next);
 });
+
+app.get('/api/user/:id/favorite-recipes', (req, res, next) => {
+  client.query(`
+    SELECT
+        favorites
+      FROM users 
+  `).then(result => {
+    res.send(result.rows);
+  })
+    .catch(next);
+});
 // // routes
 // app.get('/api/neighborhoods', auth, (req, res, next) => {
 
