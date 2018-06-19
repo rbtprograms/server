@@ -240,6 +240,68 @@ const client = require('./db-client');
 
 // });
 
+
+
+// Sign-up
+app.post('/api/auth/signup', (req, res, next) => {
+  const body = req.body;
+  client.query(`
+    SELECT COUNT(*)
+    FROM users
+    WHERE username = $1;  
+  `, [body.username])
+    .then(result => {
+      if(result.rows[0].count > 0) {
+        throw new Error('Username already exists!');
+      }
+
+      return client.query(`
+        INSERT INTO users (username, password)
+        VALUES ($1, $2)
+        RETURNING id, username
+      `,
+      [body.username, body.password]);
+    })
+    .then(result => {
+      const row = result.rows[0];
+      res.send({ 
+        id: row.id,
+        username: row.username
+      });
+    })
+    .catch(next);
+});
+
+// Sign-in
+app.post('/api/auth/signin', (req, res, next) => {
+  const body = req.body;
+  console.log('\n\nbody is', body);
+  client.query(`
+    SELECT *
+    FROM users
+    WHERE username = $1;
+  `, [body.username])
+    .then(result => {
+      const row = result.rows[0];
+      console.log('\n\nrow', result);
+      if(!row || row.password !== body.password) {
+        throw new Error ('Incorrect username and/or password!');
+      }
+      res.send({ 
+        id: row.id,
+        username: row.username
+      });
+    })
+    .catch(next);
+});
+
+
+
+
+
+
+
+
 // must use all 4 parameters so express "knows" this is custom error handler!
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
