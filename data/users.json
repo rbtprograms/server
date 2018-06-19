@@ -2,5 +2,7 @@
   { "username" : "test",
   "email" : "test@test.com",
   "password" : "test" ,
-  "shopping_list_id" : 1}
+  "shopping_list_id" : 1,
+  "favorites" : 1959173
+}
 ]
