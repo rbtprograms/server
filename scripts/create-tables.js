@@ -30,7 +30,8 @@ client.query(`
     username VARCHAR(256) UNIQUE NOT NULL,
     email VARCHAR(256) UNIQUE,
     password VARCHAR(256),
-    shopping_list_id int
+    shopping_list_id int,
+    favorites int
   );
 
   CREATE TABLE IF NOT EXISTS shopping_list (
