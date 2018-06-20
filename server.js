@@ -53,134 +53,23 @@ app.get('/api/user/:id/favorite-recipes', (req, res, next) => {
   })
     .catch(next);
 });
-// // routes
-// app.get('/api/neighborhoods', auth, (req, res, next) => {
-
-//   client.query(`
-//     select id, 
-//       name, 
-//       quadrant_id as "quadrantId", 
-//       description, 
-//       population, 
-//       founded
-//     from neighborhoods
-//     order by name;
-//   `).then(result => {
-//     res.send(result.rows);
-//   })
-//     .catch(next);
-
-// });
-
-// app.post('/api/neighborhoods', auth, (req, res, next) => {
-//   const body = req.body;
-//   if(body.name === 'error') return next('bad name');
-
-//   // get user id via:
-//   const userId = req.userId;
-  
-//   client.query(`
-//     insert into neighborhoods (name, quadrant_id, population, founded, description)
-//     values ($1, $2, $3, $4, $5, $6)
-//     returning *, quadrant_id as "quadrantId";
-//   `,
-//   [body.name, body.quadrantId, body.population, body.founded, body.description]
-//   ).then(result => {
-//     // send back object
-//     res.send(result.rows[0]);
-//   })
-//     .catch(next);
-// });
-
-// app.put('/api/neighborhoods/:id', auth, (req, res, next) => {
-//   const body = req.body;
-
-//   client.query(`
-//     update neighborhoods
-//     set
-//       name = $1,
-//       quadrant_id = $2,
-//       population = $3,
-//       founded = $4,
-//       description = $5
-//     where id = $6
-//     returning *, quadrant_id as "quadrantId";
-//   `,
-//   [body.name, body.quadrantId, body.population, body.founded, body.description, req.params.id]
-//   ).then(result => {
-//     res.send(result.rows[0]);
-//   })
-//     .catch(next);
-// });
-
-// app.delete('/api/neighborhoods/:id', auth, (req, res, next) => {
-//   client.query(`
-//     delete from neighborhoods where id=$1;
-//   `,
-//   [req.params.id]
-//   ).then(() => {
-//     res.send({ removed: true });
-//   })
-//     .catch(next);
-// });
-
-// app.get('/api/quadrants', auth, (req, res, next) => {
-
-//   client.query(`
-//     select 
-//       q.id, q.name, q.direction,
-//       count(n.id) as "neighborhoodCount",
-//       avg(n.population) as "populationAvg "
-//     from quadrants q
-//     left join neighborhoods n
-//     on q.id = n.quadrant_id
-//     group by q.id
-//     order by q.name;
-//   `)
-//     .then(result => {
-//       res.send(result.rows);
-//     })
-    
-//     .catch(next);
-// });
-
-// app.get('/api/quadrants/:id', auth, (req, res, next) => {
-
-//   const quadrantPromise = client.query(`
-//     select id, name, direction
-//     from quadrants q
-//     where q.id = $1;
-//   `,
-//   [req.params.id]);
-
-//   const neighborhoodsPromise = client.query(`
-//     select id, name, description
-//     from neighborhoods
-//     where quadrant_id = $1;
-//   `,
-//   [req.params.id]);
-
-//   Promise.all([quadrantPromise, neighborhoodsPromise])
-//     .then(promiseValues => {
-//       const quadrantResult = promiseValues[0];
-//       const neighborhoodsResult = promiseValues[1];
-
-//       if(quadrantResult.rows.length === 0) {
-//         res.sendStatus(404);
-//         return;
-//       }
-
-//       const quadrant = quadrantResult.rows[0];
-//       const neighborhoods = neighborhoodsResult.rows;
-//       quadrant.neighborhoods = neighborhoods;
-
-//       res.send(quadrant);
-//     })
-//     .catch(next);
-// });
-
 
 ////////////////////////SHOPPING_LSIT////////////////////////////
+// Get shopping_list by user_id
+app.get('/api/list/:id', (req, res, next) => {
+  const id = parseInt(req.params.id);
+  console.log('id is', id);
+  client.query(`
+    SELECT *
+    FROM shopping_list
+    WHERE user_id=$1;
+  `, [id])
+    .then(result => {
+      res.send(result.rows);
+    })
+    .catch(next);
+});
+
 // Add to shopping list
 app.post('/api/list', (req, res, next) => {
   const body = req.body;
@@ -189,7 +78,7 @@ app.post('/api/list', (req, res, next) => {
       client.query(`
       INSERT INTO shopping_list (item, user_id, selected)
       VALUES ($1, $2, $3);
-    `, [item.name, item.userid, item.selected])
+    `, [item.item, item.userid, item.selected])
         .then(result => result.rows[0]);
     })
   )
@@ -200,7 +89,7 @@ app.post('/api/list', (req, res, next) => {
 });
 
 // Update shopping list
-app.put('/api/list', (req, res, next) => {
+app.put('/api/list/update', (req, res, next) => {
   const body = req.body;
   console.log('the body is', body);
   Promise.all(
@@ -219,24 +108,31 @@ app.put('/api/list', (req, res, next) => {
     .catch(next);
 });
 
-// Get shopping_list by user_id
-app.get('/api/list/:id', (req, res, next) => {
+// Delete selected items from shopping_list by user_id
+app.delete('/api/list/update/:id', (req, res, next) => {
+  const body = req.body;
   const id = parseInt(req.params.id);
-  console.log('id is', id);
-  client.query(`
-    SELECT *
-    FROM shopping_list
-    WHERE user_id=$1;
-  `, [id])
-    .then(result => {
-      res.send(result.rows);
+  console.log('\n\n\n body is', body);
+  Promise.all(
+    body.map(item => {
+      client.query(`
+      DELETE FROM shopping_list
+      WHERE user_id=$1
+      AND item=$2
+      AND selected!=$3;
+    `, [id, item.item, item.selected])
+        .then(result => result.rows[0]);
+    })
+  )
+    .then(() => {
+      res.send({ updated : true });
     })
     .catch(next);
 });
 
 // Delete shopping_list by user_id
 app.delete('/api/list/:id', (req, res, next) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   console.log('\n\n\nid is', id);
   client.query(`
     DELETE FROM shopping_list
