@@ -44,7 +44,7 @@ client.query(`
 
   CREATE TABLE IF NOT EXISTS favorite_recipes (
     id SERIAL PRIMARY KEY,
-    recipe_name VARCHAR(256,
+    recipe_name VARCHAR(256),
     user_id INTEGER NOT NULL,
     selected BOOLEAN NOT NULL
   );
