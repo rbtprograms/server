@@ -169,7 +169,7 @@ app.get('/api/search', (req, res, next) => {
 // });
 
 
-
+////////////////////////SHOPPING_LSIT////////////////////////////
 // Add to shopping list
 app.post('/api/list', (req, res, next) => {
   const body = req.body;
@@ -208,8 +208,9 @@ app.put('/api/list', (req, res, next) => {
     .catch(next);
 });
 
+// Get shopping_list by user_id
 app.get('/api/list/:id', (req, res, next) => {
-  const id = req.params.id;
+  const id = parseInt(req.params.id);
   console.log('id is', id);
   client.query(`
     SELECT *
@@ -222,7 +223,22 @@ app.get('/api/list/:id', (req, res, next) => {
     .catch(next);
 });
 
+// Delete shopping_list by user_id
+app.delete('/api/list/:id', (req, res, next) => {
+  const id = parseInt(req.params.id);
+  console.log('\n\n\nid is', id);
+  client.query(`
+    DELETE FROM shopping_list
+    WHERE user_id=$1;
+  `, [id])
+    .then(result => {
+      console.log('we did stuff', result);
+      res.send({ cleared : true });
+    })
+    .catch(next);
+});
 
+/////////////////////LOGIN//////////////////////////////
 // Sign-up
 app.post('/api/auth/signup', (req, res, next) => {
   const body = req.body;
@@ -264,7 +280,7 @@ app.post('/api/auth/signin', (req, res, next) => {
   `, [body.username])
     .then(result => {
       const row = result.rows[0];
-      console.log('\n\nrow', result);
+      console.log('\n\nrow', result.rows[0]);
       if(!row || row.password !== body.password) {
         throw new Error ('Incorrect username and/or password!');
       }
@@ -276,6 +292,8 @@ app.post('/api/auth/signin', (req, res, next) => {
     .catch(next);
 });
 
+
+///////////////////////////////////////////////////////////////
 // must use all 4 parameters so express "knows" this is custom error handler!
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
