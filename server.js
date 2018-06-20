@@ -188,9 +188,39 @@ app.post('/api/list', (req, res, next) => {
     .catch(next);
 });
 
+// Update shopping list
+app.put('/api/list', (req, res, next) => {
+  const body = req.body;
+  console.log('the body is', body);
+  Promise.all(
+    body.map(item => {
+      client.query(`
+      UPDATE shopping_list
+      SET selected=$1
+      WHERE userid=$2 AND selected!=$1;
+    `, [item.selected, item.id])
+        .then(result => result.rows[0]);
+    })
+  )
+    .then(() => {
+      res.send({ updated : true });
+    })
+    .catch(next);
+});
 
-
-
+app.get('/api/list/:id', (req, res, next) => {
+  const id = req.params.id;
+  console.log('id is', id);
+  client.query(`
+    SELECT *
+    FROM shopping_list
+    WHERE user_id=$1;
+  `, [id])
+    .then(result => {
+      res.send(result.rows);
+    })
+    .catch(next);
+});
 
 
 // Sign-up
