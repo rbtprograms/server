@@ -46,7 +46,7 @@ app.get('/api/search', (req, res, next) => {
 app.get('/api/user/:id/favorite-recipes', (req, res, next) => {
   client.query(`
     SELECT
-        favorites
+        favorite_recipes_id
       FROM users 
   `).then(result => {
     res.send(result.rows);
