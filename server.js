@@ -88,6 +88,25 @@ app.post('/api/list', (req, res, next) => {
     .catch(next);
 });
 
+app.post('/api/favorite-recipes', (req, res, next) => {
+  const body = req.body;
+  console.log('this is in server bobby', body);
+  Promise.all(
+    body.map(item => {
+      client.query(`
+      INSERT INTO favorite_recipes (recipe_name, user_id, recipe_id, selected)
+      VALUES ($1, $2, $3, $4)
+      `,
+      [item.recipe_name, item.user_id, item. recipe_id, item.selected])
+        .then(result => result.rows[0]);
+    })
+  )
+    .then(() => {
+      res.send({ added : true });
+    })
+    .catch(next);
+});
+
 // Update shopping list
 app.put('/api/list/update', (req, res, next) => {
   const body = req.body;
