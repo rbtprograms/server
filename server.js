@@ -94,12 +94,18 @@ app.put('/api/list/update', (req, res, next) => {
   console.log('\n\n\n the body is', body);
   Promise.all(
     body.map(item => {
+      console.log('item is', item);
       client.query(`
       UPDATE shopping_list
       SET selected=$1
-      WHERE user_id=$2 AND selected!=$1 AND item=$3;
-    `, [item.selected, item.id, item.item])
-        .then(result => result.rows[0]);
+      WHERE user_id=$2
+      AND item=$3
+      RETURNING *;
+    `, [item.selected, item.user_id, item.item])
+        .then(result => {
+          console.log('\n\n result', result.rows[0]);
+          // result.rows[0];
+        });
     })
   )
     .then(result => {
@@ -113,7 +119,6 @@ app.put('/api/list/update', (req, res, next) => {
 app.delete('/api/list/update/:id', (req, res, next) => {
   const body = req.body;
   const id = parseInt(req.params.id);
-  console.log('\n\n\n body is', body);
   Promise.all(
     body.map(item => {
       client.query(`
@@ -134,13 +139,11 @@ app.delete('/api/list/update/:id', (req, res, next) => {
 // Delete shopping_list by user_id
 app.delete('/api/list/:id', (req, res, next) => {
   const id = req.params.id;
-  console.log('\n\n\nid is', id);
   client.query(`
     DELETE FROM shopping_list
     WHERE user_id=$1;
   `, [id])
-    .then(result => {
-      console.log('we did stuff', result);
+    .then(() => {
       res.send({ cleared : true });
     })
     .catch(next);
