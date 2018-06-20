@@ -91,18 +91,19 @@ app.post('/api/list', (req, res, next) => {
 // Update shopping list
 app.put('/api/list/update', (req, res, next) => {
   const body = req.body;
-  console.log('the body is', body);
+  console.log('\n\n\n the body is', body);
   Promise.all(
     body.map(item => {
       client.query(`
       UPDATE shopping_list
       SET selected=$1
-      WHERE userid=$2 AND selected!=$1;
-    `, [item.selected, item.id])
+      WHERE user_id=$2 AND selected!=$1 AND item=$3;
+    `, [item.selected, item.id, item.item])
         .then(result => result.rows[0]);
     })
   )
-    .then(() => {
+    .then(result => {
+      console.log('\n\n\n result is', result);
       res.send({ updated : true });
     })
     .catch(next);
