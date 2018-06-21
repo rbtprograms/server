@@ -55,14 +55,17 @@ app.get('/api/months', (req, res, next) => {
     .catch(next);
 });
 
-app.get('/api/user/:id/favorite-recipes', (req, res, next) => {
+app.get('/api/favorite-recipes/:id', (req, res, next) => {
+  const id = parseInt(req.params.id);
   client.query(`
-    SELECT
-        favorite_recipes_id
-      FROM users 
-  `).then(result => {
-    res.send(result.rows);
-  })
+    SELECT *
+      FROM favorite_recipes
+      WHERE user_id=$1;
+  `,
+  [id])
+    .then(result => {
+      res.send(result.rows);
+    })
     .catch(next);
 });
 
