@@ -220,19 +220,20 @@ app.post('/api/auth/signup', (req, res, next) => {
 // Sign-in
 app.post('/api/auth/signin', (req, res, next) => {
   const body = req.body;
-  console.log('\n\nbody is', body);
+  console.log(' body is', body);
   client.query(`
     SELECT *
     FROM users
     WHERE username = $1;
   `, [body.username])
     .then(result => {
+
       const row = result.rows[0];
       console.log('\n\nrow', result.rows[0]);
       if(!row || row.password !== body.password) {
         throw new Error ('Incorrect username and/or password!');
       }
-      res.send({ 
+      return res.send({ 
         id: row.id,
         username: row.username
       });
