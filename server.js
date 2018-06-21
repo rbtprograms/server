@@ -77,7 +77,8 @@ app.get('/api/list/:id', (req, res, next) => {
   client.query(`
     SELECT *
     FROM shopping_list
-    WHERE user_id=$1;
+    WHERE user_id=$1
+    ORDER BY id ASC;
   `, [id])
     .then(result => {
       res.send(result.rows);
@@ -95,7 +96,7 @@ app.post('/api/list', (req, res, next) => {
       client.query(`
       INSERT INTO shopping_list (item, user_id, selected)
       VALUES ($1, $2, $3);
-    `, [item.item, item.userid, item.selected])
+    `, [item.item, item.user_id, item.selected])
         .then(result => result.rows[0]);
     })
   )
@@ -135,12 +136,11 @@ app.put('/api/list/update', (req, res, next) => {
       UPDATE shopping_list
       SET selected=$1
       WHERE user_id=$2
-      AND item=$3
-      RETURNING *;
+      AND NOT selected=$1
+      AND item=$3;
     `, [item.selected, item.user_id, item.item])
         .then(result => {
-          console.log('\n\n result', result.rows[0]);
-          // result.rows[0];
+          result.rows[0];
         });
     })
   )
@@ -154,16 +154,17 @@ app.put('/api/list/update', (req, res, next) => {
 // Delete selected items from shopping_list by user_id
 app.delete('/api/list/update/:id', (req, res, next) => {
   const body = req.body;
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   Promise.all(
     body.map(item => {
-      client.query(`
-      DELETE FROM shopping_list
-      WHERE user_id=$1
-      AND item=$2
-      AND selected!=$3;
-    `, [id, item.item, item.selected])
-        .then(result => result.rows[0]);
+      if(item.selected) {
+        client.query(`
+        DELETE FROM shopping_list
+        WHERE user_id=$1
+        AND item=$2;
+      `, [id, item.item])
+          .then(result => result.rows[0]);
+      }
     })
   )
     .then(() => {
