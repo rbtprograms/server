@@ -1,4 +1,5 @@
 require('dotenv').config();
+const PORT = process.env.PORT || 3000;
 
 // basic express app
 const express = require('express');
@@ -30,7 +31,7 @@ const client = require('./db-client');
 //   next();
 // };
 
-app.get('https://pure-river-67642.herokuapp.com/api/search', (req, res, next) => {
+app.get('/api/search', (req, res, next) => {
   client.query(`
     SELECT
         food,
@@ -43,7 +44,7 @@ app.get('https://pure-river-67642.herokuapp.com/api/search', (req, res, next) =>
     .catch(next);
 });
 
-app.get('https://pure-river-67642.herokuapp.com/api/months', (req, res, next) => {
+app.get('/api/months', (req, res, next) => {
   client.query(`
     SELECT
       id,
@@ -254,5 +255,4 @@ app.use((err, req, res, next) => {
 });
 
 // start "listening" (run) the app (server)
-const PORT = process.env.PORT;
 app.listen(PORT, () => console.log('server running on port', PORT));
