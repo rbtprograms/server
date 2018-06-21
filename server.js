@@ -43,6 +43,18 @@ app.get('/api/search', (req, res, next) => {
     .catch(next);
 });
 
+app.get('/api/months', (req, res, next) => {
+  client.query(`
+    SELECT
+      id,
+      month
+    FROM months
+  `).then(result => {
+    res.send(result.rows);
+  })
+    .catch(next);
+});
+
 app.get('/api/favorite-recipes/:id', (req, res, next) => {
   const id = parseInt(req.params.id);
   client.query(`
@@ -72,6 +84,8 @@ app.get('/api/list/:id', (req, res, next) => {
     })
     .catch(next);
 });
+
+
 
 // Add to shopping list
 app.post('/api/list', (req, res, next) => {
