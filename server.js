@@ -30,7 +30,7 @@ const client = require('./db-client');
 //   next();
 // };
 
-app.get('/api/search', (req, res, next) => {
+app.get('https://pure-river-67642.herokuapp.com/api/search', (req, res, next) => {
   client.query(`
     SELECT
         food,
@@ -43,7 +43,7 @@ app.get('/api/search', (req, res, next) => {
     .catch(next);
 });
 
-app.get('/api/months', (req, res, next) => {
+app.get('https://pure-river-67642.herokuapp.com/api/months', (req, res, next) => {
   client.query(`
     SELECT
       id,
