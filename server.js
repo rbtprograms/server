@@ -43,14 +43,29 @@ app.get('/api/search', (req, res, next) => {
     .catch(next);
 });
 
-app.get('/api/user/:id/favorite-recipes', (req, res, next) => {
+app.get('/api/months', (req, res, next) => {
   client.query(`
     SELECT
-        favorite_recipes_id
-      FROM users 
+      id,
+      month
+    FROM months
   `).then(result => {
     res.send(result.rows);
   })
+    .catch(next);
+});
+
+app.get('/api/favorite-recipes/:id', (req, res, next) => {
+  const id = parseInt(req.params.id);
+  client.query(`
+    SELECT *
+      FROM favorite_recipes
+      WHERE user_id=$1;
+  `,
+  [id])
+    .then(result => {
+      res.send(result.rows);
+    })
     .catch(next);
 });
 
@@ -70,6 +85,8 @@ app.get('/api/list/:id', (req, res, next) => {
     })
     .catch(next);
 });
+
+
 
 // Add to shopping list
 app.post('/api/list', (req, res, next) => {
