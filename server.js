@@ -126,6 +126,20 @@ app.post('/api/favorite-recipes', (req, res, next) => {
     .catch(next);
 });
 
+app.delete('/api/favorite-recipes', (req, res, next) => {
+  const body = req.body;
+  console.log('the body is recipe', body);
+  client.query(`
+    DELETE FROM favorite_recipes
+    WHERE recipe_id=$1
+    AND user_id=$2;
+  `, [body.recipeid, body.userid])
+    .then(() => {
+      res.send({ removed : true });
+    })
+    .catch(next);
+});
+
 // Update shopping list
 app.put('/api/list/update', (req, res, next) => {
   const body = req.body;
